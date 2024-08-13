@@ -1,5 +1,5 @@
 import { FacebookAuthenticationParams } from '@/domain/features'
-import { LoadFacebookUserApi } from '@/application/contracts/api'
+import { LoadFacebookUserApi } from '@/application/contracts/apis'
 import { AuthenticationError } from '@/domain/errors'
 
 export class FacebookAuthenticationService {

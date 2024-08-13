@@ -9,7 +9,6 @@ const config: Config.InitialOptions = {
   ],
   coverageDirectory: 'coverage',
   coverageProvider: 'babel',
-  preset: '@shelf/jest-mongodb',
   watchPathIgnorePatterns: ['globalConfig'],
   transform: {
     '.+\\.ts$': 'ts-jest'

@@ -34,7 +34,7 @@ describe('Facebook Authentication Service', () => {
     expect(authResult).toEqual(new AuthenticationError())
   })
 
-  it('should return LoadUserRepository when LoadFacebookUserApi returns data', async () => {
+  it('should return LoadUserAccountRepository when LoadFacebookUserApi returns data', async () => {
     await sut.perform({ token })
     expect(loadUserAccountRepository.load).toHaveBeenCalledWith({ email: 'any_fb_email' })
     expect(loadUserAccountRepository.load).toHaveBeenCalledTimes(1)

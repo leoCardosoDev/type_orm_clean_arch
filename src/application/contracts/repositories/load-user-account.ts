@@ -6,4 +6,9 @@ export type LoadUserAccountRepositoryParams = {
   email: string
 }
 
-export type LoadUserAccountRepositoryResult = undefined
+export type LoadUserAccountRepositoryResult =
+  | undefined
+  | {
+      id: string
+      name?: string
+    }

@@ -4,7 +4,7 @@ export interface SaveFacebookAccountRepository {
 
 export type SaveFacebookAccountRepositoryParams = {
   id?: string
-  name: string
+  name?: string
   email: string
   facebookId: string
 }

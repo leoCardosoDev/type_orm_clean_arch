@@ -1,5 +1,5 @@
 export interface SaveFacebookAccountRepository {
-  saveWithFacebook: (_params: SaveFacebookAccountRepositoryParams) => Promise<void>
+  saveWithFacebook: (_params: SaveFacebookAccountRepositoryParams) => Promise<SaveFacebookAccountRepositoryResult>
 }
 
 export type SaveFacebookAccountRepositoryParams = {
@@ -7,4 +7,8 @@ export type SaveFacebookAccountRepositoryParams = {
   name?: string
   email: string
   facebookId: string
+}
+
+export type SaveFacebookAccountRepositoryResult = {
+  id: string
 }

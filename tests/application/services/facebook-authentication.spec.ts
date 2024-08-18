@@ -81,4 +81,10 @@ describe('Facebook Authentication Service', () => {
     const promise = sut.perform({ token })
     await expect(promise).rejects.toThrow(new Error('fb_error'))
   })
+
+  it('should rethrow if LoadUserAccountRepository throws', async () => {
+    userAccountRepository.load.mockRejectedValueOnce(new Error('fb_error'))
+    const promise = sut.perform({ token })
+    await expect(promise).rejects.toThrow(new Error('fb_error'))
+  })
 })

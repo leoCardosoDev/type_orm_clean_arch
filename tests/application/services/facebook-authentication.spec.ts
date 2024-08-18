@@ -15,20 +15,25 @@ describe('Facebook Authentication Service', () => {
   let crypto: MockProxy<TokenGenerator>
   let userAccountRepository: MockProxy<LoadUserAccountRepository & SaveFacebookAccountRepository >
   let sut: FacebookAuthenticationService
-  const token = 'any_token'
+  let token: string
 
-  beforeEach(() => {
+  beforeAll(() => {
+    token = 'any_token'
     facebookApi = mock()
-    userAccountRepository = mock()
-    crypto = mock()
     facebookApi.loadUser.mockResolvedValue({
       name: 'any_fb_name',
       email: 'any_fb_email',
       facebookId: 'any_facebook_id'
     })
+    userAccountRepository = mock()
     userAccountRepository.load.mockResolvedValue(undefined)
     userAccountRepository.saveWithFacebook.mockResolvedValue({ id: 'any_account_id' })
+    crypto = mock()
     crypto.generateToken.mockResolvedValue('any_generated_token')
+  })
+
+  beforeEach(() => {
+    jest.clearAllMocks()
     sut = new FacebookAuthenticationService(
       facebookApi,
       userAccountRepository,

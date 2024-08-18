@@ -3,7 +3,7 @@ import { FacebookAuthenticationParams } from '@/domain/features'
 import { FacebookAccount } from '@/domain/models'
 import { LoadFacebookUserApi } from '@/application/contracts/apis'
 import { LoadUserAccountRepository, SaveFacebookAccountRepository } from '@/application/contracts/repositories'
-import { TokenGenerator } from '../contracts/cryptography'
+import { TokenGenerator } from '@/application/contracts/cryptography'
 
 export class FacebookAuthenticationService {
   constructor(

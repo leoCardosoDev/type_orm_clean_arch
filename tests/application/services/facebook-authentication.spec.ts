@@ -4,7 +4,7 @@ import { LoadFacebookUserApi } from '@/application/contracts/apis'
 import { LoadUserAccountRepository, SaveFacebookAccountRepository } from '@/application/contracts/repositories'
 import { FacebookAuthenticationService } from '@/application/services'
 
-import { mocked } from "jest-mock"
+import { mocked } from 'jest-mock'
 import { mock, MockProxy } from 'jest-mock-extended'
 import { TokenGenerator } from '@/application/contracts/cryptography'
 
@@ -13,7 +13,7 @@ jest.mock('@/domain/models/facebook-account')
 describe('Facebook Authentication Service', () => {
   let facebookApi: MockProxy<LoadFacebookUserApi>
   let crypto: MockProxy<TokenGenerator>
-  let userAccountRepository: MockProxy<LoadUserAccountRepository & SaveFacebookAccountRepository >
+  let userAccountRepository: MockProxy<LoadUserAccountRepository & SaveFacebookAccountRepository>
   let sut: FacebookAuthenticationService
   let token: string
 
@@ -34,11 +34,7 @@ describe('Facebook Authentication Service', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-    sut = new FacebookAuthenticationService(
-      facebookApi,
-      userAccountRepository,
-      crypto
-    )
+    sut = new FacebookAuthenticationService(facebookApi, userAccountRepository, crypto)
   })
 
   it('should call LoadFacebookUserApi with correct params', async () => {
@@ -60,10 +56,10 @@ describe('Facebook Authentication Service', () => {
   })
 
   it('should call SaveFacebookRepository with FacebookAccount', async () => {
-    const facebookAccountStub = jest.fn().mockImplementation(() => ({ any: 'any'}))
+    const facebookAccountStub = jest.fn().mockImplementation(() => ({ any: 'any' }))
     mocked(FacebookAccount).mockImplementation(facebookAccountStub)
     await sut.perform({ token })
-    expect(userAccountRepository.saveWithFacebook).toHaveBeenCalledWith({ any: 'any'})
+    expect(userAccountRepository.saveWithFacebook).toHaveBeenCalledWith({ any: 'any' })
     expect(userAccountRepository.saveWithFacebook).toHaveBeenCalledTimes(1)
   })
 
@@ -88,20 +84,20 @@ describe('Facebook Authentication Service', () => {
   })
 
   it('should rethrow if LoadUserAccountRepository throws', async () => {
-    userAccountRepository.load.mockRejectedValueOnce(new Error('fb_error'))
+    userAccountRepository.load.mockRejectedValueOnce(new Error('load_error'))
     const promise = sut.perform({ token })
-    await expect(promise).rejects.toThrow(new Error('fb_error'))
+    await expect(promise).rejects.toThrow(new Error('load_error'))
   })
 
   it('should rethrow if SaveFacebookAccountRepository throws', async () => {
-    userAccountRepository.saveWithFacebook.mockRejectedValueOnce(new Error('fb_error'))
+    userAccountRepository.saveWithFacebook.mockRejectedValueOnce(new Error('save_error'))
     const promise = sut.perform({ token })
-    await expect(promise).rejects.toThrow(new Error('fb_error'))
+    await expect(promise).rejects.toThrow(new Error('save_error'))
   })
 
   it('should rethrow if TokenGenerator throws', async () => {
-    crypto.generateToken.mockRejectedValueOnce(new Error('fb_error'))
+    crypto.generateToken.mockRejectedValueOnce(new Error('token_error'))
     const promise = sut.perform({ token })
-    await expect(promise).rejects.toThrow(new Error('fb_error'))
+    await expect(promise).rejects.toThrow(new Error('token_error'))
   })
 })

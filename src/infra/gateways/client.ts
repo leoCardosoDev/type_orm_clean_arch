@@ -4,4 +4,5 @@ export interface HttpGetClient {
 
 export type HttpGetClientInput = {
   url: string
+  params: object
 }

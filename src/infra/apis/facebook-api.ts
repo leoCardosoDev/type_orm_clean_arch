@@ -1,7 +1,7 @@
 import { HttpGetClient } from '@/infra/gateways'
-import { LoadFacebookUserApiParams } from '@/application/contracts/apis'
+import { LoadFacebookUserApi, LoadFacebookUserApiParams, LoadFacebookUserApiResult } from '@/application/contracts/apis'
 
-export class FacebookApi {
+export class FacebookApi implements LoadFacebookUserApi {
   private readonly baseUrl = 'https://graph.facebook.com'
 
   constructor(
@@ -10,7 +10,7 @@ export class FacebookApi {
     private readonly _clientSecret: string
   ) {}
 
-  async loadUser(params: LoadFacebookUserApiParams): Promise<void> {
+  async loadUser(params: LoadFacebookUserApiParams): Promise<LoadFacebookUserApiResult> {
     const appToken = await this._httpClient.get({
       url: `${this.baseUrl}/oauth/access_token`,
       params: {
@@ -19,7 +19,6 @@ export class FacebookApi {
         grant_type: 'client_credentials'
       }
     })
-
     const debugToken = await this._httpClient.get({
       url: `${this.baseUrl}/debug_token`,
       params: {
@@ -27,13 +26,17 @@ export class FacebookApi {
         input_token: params.token
       }
     })
-
-    await this._httpClient.get({
+    const userInfo = await this._httpClient.get({
       url: `${this.baseUrl}/${debugToken.data.user_id}`,
       params: {
         fields: ['id', 'name', 'email'].join(','),
         access_token: params.token
       }
     })
+    return {
+      facebookId: userInfo.id,
+      name: userInfo.name,
+      email: userInfo.email
+    }
   }
 }

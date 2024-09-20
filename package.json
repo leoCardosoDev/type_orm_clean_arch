@@ -1,6 +1,6 @@
 {
   "name": "type_orm_clean_arch",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "index.js",
   "scripts": {
     "format": "prettier --write 'src/**/*.{js,ts,json,md}'",

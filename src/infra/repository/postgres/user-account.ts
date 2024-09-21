@@ -1,4 +1,10 @@
-import { LoadUserAccountRepository, LoadUserAccountRepositoryParams, LoadUserAccountRepositoryResult, SaveFacebookAccountRepositoryParams } from '@/application/contracts/repositories'
+import {
+  LoadUserAccountRepository,
+  LoadUserAccountRepositoryParams,
+  LoadUserAccountRepositoryResult,
+  SaveFacebookAccountRepositoryParams,
+  SaveFacebookAccountRepositoryResult
+} from '@/application/contracts/repositories'
 import { DataSource } from 'typeorm'
 import { PgUser } from '@/infra/repository/postgres/entities'
 
@@ -15,15 +21,18 @@ export class PgUserAccountRepository implements LoadUserAccountRepository {
     }
   }
 
-  async saveWithFacebook(params: SaveFacebookAccountRepositoryParams): Promise<void> {
+  async saveWithFacebook(params: SaveFacebookAccountRepositoryParams): Promise<SaveFacebookAccountRepositoryResult> {
+    let id: string
     const pgUserRepository = this._dataSource.getRepository(PgUser)
     if (params.id === undefined) {
-      await pgUserRepository.save({
+      const pgUser = await pgUserRepository.save({
         email: params.email,
         name: params.name,
         facebookId: params.facebookId
       })
+      id = pgUser.id.toString()
     } else {
+      id = params.id
       await pgUserRepository.update(
         {
           id: parseInt(params.id)
@@ -34,5 +43,6 @@ export class PgUserAccountRepository implements LoadUserAccountRepository {
         }
       )
     }
+    return { id }
   }
 }

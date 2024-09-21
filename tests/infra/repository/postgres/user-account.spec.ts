@@ -1,69 +1,63 @@
 import { PgUserAccountRepository } from '@/infra/repository/postgres'
 import { PgUser } from '@/infra/repository/postgres/entities'
-import { DataType, newDb } from 'pg-mem'
+import { DataType, IBackup, IMemoryDb, newDb } from 'pg-mem'
+import { DataSource, Repository } from 'typeorm'
 
 describe('PgUserAccountRepository', () => {
   describe('load', () => {
-    it('should return an account if email exists', async () => {
-      const db = newDb()
+    let sut: PgUserAccountRepository
+    let pgUserRepository: Repository<PgUser>
+    let connection: DataSource
+    let db: IMemoryDb
+    let backup: IBackup
+
+    beforeAll(async () => {
+      db = newDb()
       db.public.registerFunction({
         name: 'current_database',
         returns: db.public.getType(DataType.text),
-        implementation: () => 'pg_mem_test_db' // Retorna um nome fictício de banco de dados
+        implementation: () => 'pg_mem_test_db'
       })
       db.public.registerFunction({
         name: 'version',
-        returns: db.public.getType(DataType.text), // Retorna o tipo text
-        implementation: () => 'PostgreSQL 13.3' // Retorna uma string fictícia com a versão
+        returns: db.public.getType(DataType.text),
+        implementation: () => 'PostgreSQL 13.3'
       })
       db.public.registerFunction({
         name: 'obj_description',
-        args: [DataType.regclass, DataType.text], // Tipos esperados para os argumentos
+        args: [DataType.regclass, DataType.text],
         returns: db.public.getType(DataType.text),
-        implementation: () => null // Retorna null ou uma string fictícia
+        implementation: () => null
       })
-      const connection = await db.adapters.createTypeormDataSource({
+      connection = await db.adapters.createTypeormDataSource({
         type: 'postgres',
         entities: [PgUser]
       })
       await connection.initialize()
       await connection.synchronize()
-      const pgUserRepository = connection.getRepository(PgUser)
-      await pgUserRepository.save({ email: 'existing_email' })
-      const sut = new PgUserAccountRepository(connection)
-      const account = await sut.load({ email: 'existing_email' })
-      expect(account).toEqual({ id: '1' })
-      await connection.close()
+      backup = db.backup()
+      pgUserRepository = connection.getRepository(PgUser)
     })
 
-    it('should return undefine if email does not exists', async () => {
-      const db = newDb()
-      db.public.registerFunction({
-        name: 'current_database',
-        returns: db.public.getType(DataType.text),
-        implementation: () => 'pg_mem_test_db' // Retorna um nome fictício de banco de dados
-      })
-      db.public.registerFunction({
-        name: 'version',
-        returns: db.public.getType(DataType.text), // Retorna o tipo text
-        implementation: () => 'PostgreSQL 13.3' // Retorna uma string fictícia com a versão
-      })
-      db.public.registerFunction({
-        name: 'obj_description',
-        args: [DataType.regclass, DataType.text], // Tipos esperados para os argumentos
-        returns: db.public.getType(DataType.text),
-        implementation: () => null // Retorna null ou uma string fictícia
-      })
-      const connection = await db.adapters.createTypeormDataSource({
-        type: 'postgres',
-        entities: [PgUser]
-      })
-      await connection.initialize()
-      await connection.synchronize()
-      const sut = new PgUserAccountRepository(connection)
-      const account = await sut.load({ email: 'new_email' })
+    afterAll(async () => {
+      if (connection.isInitialized) {
+        await connection.close()
+      }
+    })
+
+    beforeEach(() => {
+      backup.restore()
+      sut = new PgUserAccountRepository(connection)
+    })
+    it('should return an account if email exists', async () => {
+      await pgUserRepository.save({ email: 'existing_email' })
+      const account = await sut.load({ email: 'existing_email' })
+      expect(account).toEqual({ id: '1' })
+    })
+
+    it('should return undefined if email does not exist', async () => {
+      const account = await sut.load({ email: 'any_email' })
       expect(account).toBeUndefined()
-      await connection.close()
     })
   })
 })

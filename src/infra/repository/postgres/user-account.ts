@@ -7,11 +7,10 @@ export class PgUserAccountRepository implements LoadUserAccountRepository {
   async load(param: LoadUserAccountRepositoryParams): Promise<LoadUserAccountRepositoryResult> {
     const pgUserRepository = this._dataSource.getRepository(PgUser)
     const pgUser = await pgUserRepository.findOne({ where: { email: param.email } })
-    if (pgUser !== undefined) {
-      return {
-        id: pgUser!.id.toString(),
-        name: pgUser?.name ?? undefined
-      }
+    if (!pgUser) return undefined
+    return {
+      id: pgUser!.id.toString(),
+      name: pgUser?.name ?? undefined
     }
   }
 }

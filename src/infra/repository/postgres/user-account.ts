@@ -2,13 +2,14 @@ import {
   LoadUserAccountRepository,
   LoadUserAccountRepositoryParams,
   LoadUserAccountRepositoryResult,
+  SaveFacebookAccountRepository,
   SaveFacebookAccountRepositoryParams,
   SaveFacebookAccountRepositoryResult
 } from '@/application/contracts/repositories'
 import { DataSource } from 'typeorm'
 import { PgUser } from '@/infra/repository/postgres/entities'
 
-export class PgUserAccountRepository implements LoadUserAccountRepository {
+export class PgUserAccountRepository implements LoadUserAccountRepository, SaveFacebookAccountRepository {
   constructor(private readonly _dataSource: DataSource) {}
 
   async load(param: LoadUserAccountRepositoryParams): Promise<LoadUserAccountRepositoryResult> {

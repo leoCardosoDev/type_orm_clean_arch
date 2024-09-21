@@ -17,10 +17,22 @@ export class PgUserAccountRepository implements LoadUserAccountRepository {
 
   async saveWithFacebook(params: SaveFacebookAccountRepositoryParams): Promise<void> {
     const pgUserRepository = this._dataSource.getRepository(PgUser)
-    await pgUserRepository.save({
-      email: params.email,
-      name: params.name,
-      facebookId: params.facebookId
-    })
+    if (params.id === undefined) {
+      await pgUserRepository.save({
+        email: params.email,
+        name: params.name,
+        facebookId: params.facebookId
+      })
+    } else {
+      await pgUserRepository.update(
+        {
+          id: parseInt(params.id)
+        },
+        {
+          name: params.name,
+          facebookId: params.facebookId
+        }
+      )
+    }
   }
 }

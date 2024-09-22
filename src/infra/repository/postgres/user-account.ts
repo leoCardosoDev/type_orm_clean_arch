@@ -5,7 +5,7 @@ import {
   SaveFacebookAccountRepository,
   SaveFacebookAccountRepositoryParams,
   SaveFacebookAccountRepositoryResult
-} from '@/application/contracts/repositories'
+} from '@/domain/contracts/repositories'
 import { DataSource } from 'typeorm'
 import { PgUser } from '@/infra/repository/postgres/entities'
 

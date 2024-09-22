@@ -1,4 +1,4 @@
-import { TokenGenerator, TokenGeneratorParams, TokenGeneratorResult } from '@/application/contracts/cryptography'
+import { TokenGenerator, TokenGeneratorParams, TokenGeneratorResult } from '@/domain/contracts/cryptography'
 
 import jwt from 'jsonwebtoken'
 

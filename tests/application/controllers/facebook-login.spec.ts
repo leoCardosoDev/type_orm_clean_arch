@@ -1,4 +1,5 @@
 import { FacebookLoginController } from '@/application/controllers'
+import { AuthenticationError } from '@/domain/errors'
 import { FacebookAuthentication } from '@/domain/features'
 import { mock, MockProxy } from 'jest-mock-extended'
 
@@ -46,5 +47,14 @@ describe('FacebookLoginController', () => {
     await sut.handle({ token: 'any_token' })
     expect(facebookAuth.perform).toHaveBeenCalledWith({ token: 'any_token' })
     expect(facebookAuth.perform).toHaveBeenCalledTimes(1)
+  })
+
+  it('should return 401 if authentication fails', async () => {
+    facebookAuth.perform.mockResolvedValueOnce(new AuthenticationError())
+    const httpResponse = await sut.handle({ token: 'any_token' })
+    expect(httpResponse).toEqual({
+      statusCode: 401,
+      data: new AuthenticationError()
+    })
   })
 })

@@ -1,19 +1,7 @@
 import './config/module-alias'
+import { app } from '@/main/config/app'
+import { env } from '@/main/config/env'
 
 import 'reflect-metadata'
-import express, { json, Router } from 'express'
-import cors from 'cors'
 
-const app = express()
-app.use(cors())
-app.use(json())
-app.use((req, res, next) => {
-  res.type('json')
-  next()
-})
-const router = Router()
-router.post('/api/login/facebook', (req, res) => {
-  res.send({ data: 'any_data' })
-})
-app.use(router)
-app.listen(8080, () => console.log('Server running at http://localhost:8080'))
+app.listen(env.port, () => console.log(`Server running at http://localhost:${env.port}`))

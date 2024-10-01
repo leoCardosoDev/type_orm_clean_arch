@@ -42,7 +42,7 @@ describe('ExpressRouter', () => {
     expect(controller.handle).toHaveBeenCalledTimes(1)
   })
 
-  it('should call handle with correct request', async () => {
+  it('should respond with 200 and valid data', async () => {
     await sut.adapt(req, res)
     expect(res.status).toHaveBeenCalledWith(200)
     expect(res.status).toHaveBeenCalledTimes(1)

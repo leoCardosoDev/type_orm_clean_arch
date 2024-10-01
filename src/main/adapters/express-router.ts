@@ -8,7 +8,7 @@ export class ExpressRouter {
     if (httpResponse.statusCode === 200) {
       res.status(200).json(httpResponse.data)
     } else {
-      res.status(400).json({ error: httpResponse.data.message })
+      res.status(httpResponse.statusCode).json({ error: httpResponse.data.message })
     }
   }
 }

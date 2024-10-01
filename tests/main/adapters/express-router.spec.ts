@@ -15,20 +15,38 @@ describe('ExpressRouter', () => {
     req = getMockReq({ body: { any: 'any' } })
     res = getMockRes().res
     controller = mock()
+    controller.handle.mockResolvedValue({
+      statusCode: 200,
+      data: { data: 'any_data' }
+    })
   })
 
   beforeEach(() => {
     sut = new ExpressRouter(controller)
   })
 
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
   it('should call handle with correct request', async () => {
     await sut.adapt(req, res)
     expect(controller.handle).toHaveBeenCalledWith({ any: 'any' })
+    expect(controller.handle).toHaveBeenCalledTimes(1)
   })
 
   it('should call handle with empty request', async () => {
-    req = getMockReq()
+    const req = getMockReq()
     await sut.adapt(req, res)
     expect(controller.handle).toHaveBeenCalledWith({})
+    expect(controller.handle).toHaveBeenCalledTimes(1)
+  })
+
+  it('should call handle with correct request', async () => {
+    await sut.adapt(req, res)
+    expect(res.status).toHaveBeenCalledWith(200)
+    expect(res.status).toHaveBeenCalledTimes(1)
+    expect(res.json).toHaveBeenCalledWith({ data: 'any_data' })
+    expect(res.json).toHaveBeenCalledTimes(1)
   })
 })

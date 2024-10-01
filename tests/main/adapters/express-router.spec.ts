@@ -1,25 +1,33 @@
 import { Controller } from '@/application/controllers'
 import { ExpressRouter } from '@/main/adapters'
+// eslint-disable-next-line no-redeclare
+import { Request, Response } from 'express'
 import { getMockReq, getMockRes } from '@jest-mock/express'
 import { mock, MockProxy } from 'jest-mock-extended'
 
 describe('ExpressRouter', () => {
-  it('should call handle with correct request', async () => {
-    const req = getMockReq({ body: { any: 'any' } })
-    const { res } = getMockRes()
-    let controller: MockProxy<Controller>
+  let req: Request
+  let res: Response
+  let controller: MockProxy<Controller>
+  let sut: ExpressRouter
+
+  beforeAll(() => {
+    req = getMockReq({ body: { any: 'any' } })
+    res = getMockRes().res
     controller = mock()
-    const sut = new ExpressRouter(controller)
+  })
+
+  beforeEach(() => {
+    sut = new ExpressRouter(controller)
+  })
+
+  it('should call handle with correct request', async () => {
     await sut.adapt(req, res)
     expect(controller.handle).toHaveBeenCalledWith({ any: 'any' })
   })
 
   it('should call handle with empty request', async () => {
-    const req = getMockReq()
-    const { res } = getMockRes()
-    let controller: MockProxy<Controller>
-    controller = mock()
-    const sut = new ExpressRouter(controller)
+    req = getMockReq()
     await sut.adapt(req, res)
     expect(controller.handle).toHaveBeenCalledWith({})
   })

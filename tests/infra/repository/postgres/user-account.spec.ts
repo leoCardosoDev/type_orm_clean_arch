@@ -19,13 +19,14 @@ describe('PgUserAccountRepository', () => {
 
   afterAll(async () => {
     if (connection.isInitialized) {
-      await connection.close()
+      await connection.destroy()
     }
   })
 
   beforeEach(() => {
     backup.restore()
-    sut = new PgUserAccountRepository(connection)
+    sut = new PgUserAccountRepository()
+    sut.setDataSource(connection)
   })
 
   describe('load', () => {

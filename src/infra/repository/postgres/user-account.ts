@@ -16,6 +16,7 @@ type SaveResult = SaveFacebookAccountRepositoryResult
 
 export class PgUserAccountRepository implements LoadUserAccountRepository, SaveFacebookAccountRepository {
   private dataSource!: DataSource
+
   setDataSource(dataSource: DataSource): void {
     this.dataSource = dataSource
   }

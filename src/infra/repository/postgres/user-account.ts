@@ -15,9 +15,9 @@ type SaveParams = SaveFacebookAccountRepositoryParams
 type SaveResult = SaveFacebookAccountRepositoryResult
 
 export class PgUserAccountRepository implements LoadUserAccountRepository, SaveFacebookAccountRepository {
-  private dataSource!: DataSource
+  private dataSource: DataSource
 
-  setDataSource(dataSource: DataSource): void {
+  constructor(dataSource: DataSource) {
     this.dataSource = dataSource
   }
 

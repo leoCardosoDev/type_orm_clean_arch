@@ -46,6 +46,7 @@ describe('Login Routes', () => {
       loadUserSpy.mockResolvedValueOnce({ facebookId: 'any_id', name: 'any_name', email: 'any_email' })
       loadAccountSpy.mockResolvedValueOnce({ id: 'any_account_id', name: 'valid_name' })
       saveWithFacebookSpy.mockResolvedValueOnce({ id: 'any_account_id' })
+
       const { status, body } = await request(app).post('/api/login/facebook').send({ token: 'valid_token' })
       expect(status).toBe(200)
       expect(body.accessToken).toBeDefined()

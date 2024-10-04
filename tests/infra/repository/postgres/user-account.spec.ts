@@ -25,8 +25,7 @@ describe('PgUserAccountRepository', () => {
 
   beforeEach(() => {
     backup.restore()
-    sut = new PgUserAccountRepository()
-    sut.setDataSource(connection)
+    sut = new PgUserAccountRepository(connection)
   })
 
   describe('load', () => {

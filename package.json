@@ -1,6 +1,6 @@
 {
   "name": "type_orm_clean_arch",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "start": "node -r dotenv/config dist/main",

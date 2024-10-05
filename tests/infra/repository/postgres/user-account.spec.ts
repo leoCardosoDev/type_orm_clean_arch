@@ -19,7 +19,7 @@ describe('PgUserAccountRepository', () => {
 
   afterAll(async () => {
     if (connection.isInitialized) {
-      await connection.close()
+      await connection.destroy()
     }
   })
 

@@ -9,41 +9,35 @@ import {
 import { DataSource } from 'typeorm'
 import { PgUser } from '@/infra/repository/postgres/entities'
 
-export class PgUserAccountRepository implements LoadUserAccountRepository, SaveFacebookAccountRepository {
-  constructor(private readonly _dataSource: DataSource) {}
+type LoadParams = LoadUserAccountRepositoryParams
+type LoadResult = LoadUserAccountRepositoryResult
+type SaveParams = SaveFacebookAccountRepositoryParams
+type SaveResult = SaveFacebookAccountRepositoryResult
 
-  async load(param: LoadUserAccountRepositoryParams): Promise<LoadUserAccountRepositoryResult> {
-    const pgUserRepository = this._dataSource.getRepository(PgUser)
-    const pgUser = await pgUserRepository.findOne({ where: { email: param.email } })
-    if (!pgUser) return undefined
-    return {
-      id: pgUser!.id.toString(),
-      name: pgUser?.name ?? undefined
-    }
+export class PgUserAccountRepository implements LoadUserAccountRepository, SaveFacebookAccountRepository {
+  private dataSource: DataSource
+
+  constructor(dataSource: DataSource) {
+    this.dataSource = dataSource
   }
 
-  async saveWithFacebook(params: SaveFacebookAccountRepositoryParams): Promise<SaveFacebookAccountRepositoryResult> {
-    let id: string
-    const pgUserRepository = this._dataSource.getRepository(PgUser)
-    if (params.id === undefined) {
-      const pgUser = await pgUserRepository.save({
-        email: params.email,
-        name: params.name,
-        facebookId: params.facebookId
-      })
-      id = pgUser.id.toString()
+  async load({ email }: LoadParams): Promise<LoadResult> {
+    const pgUserRepository = this.dataSource.getRepository(PgUser)
+    const pgUser = await pgUserRepository.findOne({ where: { email } })
+    if (!pgUser) return undefined
+    return { id: pgUser!.id.toString(), name: pgUser?.name ?? undefined }
+  }
+
+  async saveWithFacebook({ id, name, email, facebookId }: SaveParams): Promise<SaveResult> {
+    let resultId: string
+    const pgUserRepository = this.dataSource.getRepository(PgUser)
+    if (id === undefined) {
+      const pgUser = await pgUserRepository.save({ email, name, facebookId })
+      resultId = pgUser.id.toString()
     } else {
-      id = params.id
-      await pgUserRepository.update(
-        {
-          id: parseInt(params.id)
-        },
-        {
-          name: params.name,
-          facebookId: params.facebookId
-        }
-      )
+      resultId = id
+      await pgUserRepository.update({ id: parseInt(id) }, { name, facebookId })
     }
-    return { id }
+    return { id: resultId }
   }
 }

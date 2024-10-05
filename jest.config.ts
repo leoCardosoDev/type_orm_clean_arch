@@ -2,14 +2,11 @@ import type { Config } from '@jest/types'
 
 const config: Config.InitialOptions = {
   roots: ['<rootDir>/tests', '<rootDir>/src'],
-  collectCoverageFrom: [
-    '<rootDir>/src/**/*.ts',
-    '!<rootDir>/src/main/**',
-    '!<rootDir>/src/**/index.ts'
-  ],
+  collectCoverageFrom: ['<rootDir>/src/**/*.ts', '!<rootDir>/src/main/**', '!<rootDir>/src/**/index.ts'],
   coverageDirectory: 'coverage',
   coverageProvider: 'babel',
   watchPathIgnorePatterns: ['globalConfig'],
+  testMatch: ['**/*.spec.ts'],
   transform: {
     '.+\\.ts$': 'ts-jest'
   },

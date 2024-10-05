@@ -1,20 +1,20 @@
-import { AuthenticationError } from '@/domain/errors'
-import { AccessToken, FacebookAccount } from '@/domain/models'
+import { AuthenticationError } from '@/domain/entities/errors'
+import { AccessToken, FacebookAccount } from '@/domain/entities'
 import { LoadFacebookUserApi } from '@/domain/contracts/apis'
 import { LoadUserAccountRepository, SaveFacebookAccountRepository } from '@/domain/contracts/repositories'
-import { FacebookAuthenticationService } from '@/domain/services'
+import { FacebookAuthenticationUsecase } from '@/domain/use-cases'
 
 import { mocked } from 'jest-mock'
 import { mock, MockProxy } from 'jest-mock-extended'
 import { TokenGenerator } from '@/domain/contracts/cryptography'
 
-jest.mock('@/domain/models/facebook-account')
+jest.mock('@/domain/entities/facebook-account')
 
-describe('Facebook Authentication Service', () => {
+describe('Facebook Authentication Usecases', () => {
   let facebookApi: MockProxy<LoadFacebookUserApi>
   let crypto: MockProxy<TokenGenerator>
   let userAccountRepository: MockProxy<LoadUserAccountRepository & SaveFacebookAccountRepository>
-  let sut: FacebookAuthenticationService
+  let sut: FacebookAuthenticationUsecase
   let token: string
 
   beforeAll(() => {
@@ -34,7 +34,7 @@ describe('Facebook Authentication Service', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
-    sut = new FacebookAuthenticationService(facebookApi, userAccountRepository, crypto)
+    sut = new FacebookAuthenticationUsecase(facebookApi, userAccountRepository, crypto)
   })
 
   it('should call LoadFacebookUserApi with correct params', async () => {

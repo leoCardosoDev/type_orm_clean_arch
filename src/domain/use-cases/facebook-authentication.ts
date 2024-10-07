@@ -4,8 +4,10 @@ import { LoadFacebookUserApi } from '@/domain/contracts/apis'
 import { LoadUserAccountRepository, SaveFacebookAccountRepository } from '@/domain/contracts/repositories'
 import { TokenGenerator } from '@/domain/contracts/cryptography'
 
+type Input = { token: string }
+type Output = { accessToken: string }
 type Setup = (_facebookApi: LoadFacebookUserApi, _userAccountRepository: LoadUserAccountRepository & SaveFacebookAccountRepository, _crypto: TokenGenerator) => FacebookAuthentication
-export type FacebookAuthentication = (_params: { token: string }) => Promise<{ accessToken: string }>
+export type FacebookAuthentication = (_params: Input) => Promise<Output>
 
 export const setUpFacebookAuthentication: Setup =
   (_facebookApi, _userAccountRepository, _crypto): FacebookAuthentication =>

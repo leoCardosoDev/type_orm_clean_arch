@@ -12,6 +12,7 @@ describe('Authorize Usecase', () => {
   beforeAll(() => {
     token = 'any_token'
     crypto = mock()
+    crypto.validateToken.mockResolvedValue('any_value')
   })
 
   beforeEach(() => {
@@ -23,5 +24,10 @@ describe('Authorize Usecase', () => {
     await sut({ token })
     expect(crypto.validateToken).toHaveBeenCalledWith({ token })
     expect(crypto.validateToken).toHaveBeenCalledTimes(1)
+  })
+
+  it('should return the correct accessToken', async () => {
+    const userId = await sut({ token })
+    expect(userId).toBe('any_value')
   })
 })
